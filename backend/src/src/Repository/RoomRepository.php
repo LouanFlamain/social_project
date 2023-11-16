@@ -48,6 +48,16 @@ class RoomRepository extends ServiceEntityRepository
         ->getResult();
         return $request;
     }
+    public function verifyUserInRoomByUserId($userId, $roomId){
+        $request = $this->createQueryBuilder('r')
+        ->where('JSON_CONTAINS(r.users, :value) = 1')
+        ->andWhere('r.id = :id')
+        ->setParameter('value', $userId)
+        ->setParameter('id', $roomId)
+        ->getQuery()
+        ->getResult();
+        return $request;
+    }
 
 //    /**
 //     * @return Room[] Returns an array of Room objects
