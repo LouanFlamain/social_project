@@ -6,17 +6,20 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Service\JwtExtractEmail;
 use ErrorException;
 use App\Entity\User;
+use App\Service\CryptMessageService;
 
 class GetRoomService{
     private $entityManager;
     private $roomRepository;
     private $JwtExtractEmail;
+    private $cryptMessage;
 
-    public function __construct(EntityManagerInterface $entityManager, RoomRepository $roomRepository,JwtExtractEmail $JwtExtractEmail )
+    public function __construct(EntityManagerInterface $entityManager, RoomRepository $roomRepository,JwtExtractEmail $JwtExtractEmail, CryptMessageService $cryptMessage )
     {
         $this->entityManager = $entityManager;
         $this->roomRepository = $roomRepository;
         $this->JwtExtractEmail = $JwtExtractEmail;
+        $this->cryptMessage = $cryptMessage;
     }
 
     public function getRooms($data, $jwt){
@@ -122,13 +125,17 @@ class GetRoomService{
                     }
                 }
 
+                //decrypt le message
+                $crypted_message = $room->getLastMessageValue();
+                $decrypted_message = $this->cryptMessage->decryptMessage($crypted_message);
+
                 $room_data = [
                     "id" => $room->getId(),
                     "room_name" => $room_name,
                     "users_id" => $users,
                     'usernames' => $room_users,
                     "multi_participant" => $room->getGroups(),
-                    "last_message_value" => $room->getLastMessageValue(),
+                    "last_message_value" => $decrypted_message,
                     "time" => [
                         "last_message_date" => $room->getLastMessageDate()->format("Y-m-d"),
                         "last_message_hour" => $room->getLastMessageDate()->format("H:i"),
@@ -148,7 +155,7 @@ class GetRoomService{
         }catch(\Exception $e){
             return [
                 'code' => 400,
-                'message' => "la création de l'utilisateur a échoue",
+                'message' => "impossible de get les rooms",
                 'error' => $e->getMessage()
             ];
         }
