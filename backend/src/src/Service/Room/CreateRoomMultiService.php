@@ -5,7 +5,7 @@ use App\Entity\Room;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\JwtExtractEmail;
-use App\Service\VerifyUserService;
+use App\Service\User\VerifyUserService;
 use ErrorException;
 use App\Entity\User;
 

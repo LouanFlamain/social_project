@@ -5,7 +5,7 @@ use App\Entity\Room;
 use App\Repository\RoomRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Service\VerifyUserService;
+use App\Service\User\VerifyUserService;
 use App\Entity\User;
 
 class CreateRoomSingleService{

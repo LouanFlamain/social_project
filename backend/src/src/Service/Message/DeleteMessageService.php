@@ -3,7 +3,7 @@
 namespace App\Service\Message;
 
 use App\Entity\Message;
-use App\Service\VerifyUserService;
+use App\Service\User\VerifyUserService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DeleteMessageService{

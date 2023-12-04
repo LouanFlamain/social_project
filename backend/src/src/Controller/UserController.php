@@ -5,7 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Service\UserService;
+use App\Service\User\UserService;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends AbstractController

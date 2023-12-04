@@ -4,7 +4,7 @@ namespace App\Service\Message;
 
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Service\VerifyUserService;
+use App\Service\User\VerifyUserService;
 use App\Entity\Message;
 use App\Entity\Room;
 use App\Service\CryptMessageService;

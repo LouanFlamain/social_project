@@ -1,5 +1,5 @@
 <?php
-namespace App\Service;
+namespace App\Service\User;
 
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\JwtExtractEmail;

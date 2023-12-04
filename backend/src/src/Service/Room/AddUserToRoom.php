@@ -3,7 +3,7 @@ namespace App\Service\Room;
 
 use App\Entity\Room;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Service\VerifyUserService;
+use App\Service\User\VerifyUserService;
 use App\Repository\RoomRepository;
 
 

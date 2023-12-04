@@ -21,6 +21,23 @@ class MessageRepository extends ServiceEntityRepository
         parent::__construct($registry, Message::class);
     }
 
+    public function getMessageByRoomId($roomId, $page){
+        $offset = $page * 20;
+        $limit = 20;
+        $requests = $this->createQueryBuilder('m')
+        ->select('m')
+        ->where('m.roomId = :roomId')
+        ->andWhere('m.isDelete != :isDelete')
+        ->orderBy('m.id', 'DESC')
+        ->setMaxResults($limit)
+        ->setFirstResult($offset)
+        ->setParameter('roomId', $roomId)
+        ->setParameter('isDelete', true)
+        ->getQuery()
+        ->getResult();
+        return $requests;
+    }
+
 //    /**
 //     * @return Message[] Returns an array of Message objects
 //     */
