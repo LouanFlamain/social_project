@@ -20,7 +20,7 @@ class MessageController extends AbstractController
         $result = $messageService->createMessage($data, $jwt);
         return new JsonResponse($result, $result['code']);
     }
-    #[Route('/api/message/delete', name: "message.delete", methods: "patch")]
+    #[Route('/api/message/delete', name: "message.delete", methods: "delete")]
     public function deleteMessage(Request $request, DeleteMessageService $messageService): JsonResponse{
         $data = json_decode($request->getContent(), true);
         $jwt = $request->headers->get('Authorization');
