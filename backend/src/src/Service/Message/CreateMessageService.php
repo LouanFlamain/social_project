@@ -67,7 +67,8 @@ class CreateMessageService{
         ->setUserId($userId)
         ->setRoomId($roomId)
         ->setCreatedAt($date)
-        ->setIsDelete(false);
+        ->setIsDelete(false)
+        ->setIsImage(false);
 
         try {
             $this->entityManager->persist($message);

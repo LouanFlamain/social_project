@@ -8,8 +8,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\Message\CreateMessageService;
 use App\Service\Message\DeleteMessageService;
+use App\Service\Message\CreateImageService;
 use App\Service\Message\GetMessageService;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class MessageController extends AbstractController
 {
@@ -33,6 +35,18 @@ class MessageController extends AbstractController
         $jwt = $request->headers->get('Authorization');
         $result = $messageService->getMessage($data, $jwt);
         return new JsonResponse($result, $result['code']);
+    }
+
+    //image part
+    #[Route('/api/image/create/{id}', name: "image.create", methods: "post")]
+    public function createImage(Request $request, CreateImageService $imageService, $id) : JsonResponse
+    {
+        $file = $request->files->get('image');
+        $jwt = $request->headers->get('Authorization');
+        $result = $imageService->createImage($file, $jwt, $id);
+        return new JsonResponse($result, $result['code']);
+
+        //MARCHE PAAAAAS !
     }
     #[Route('/api/image/get', name: "image.get", methods: "get")]
     public function getImage()

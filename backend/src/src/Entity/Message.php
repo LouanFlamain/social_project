@@ -29,6 +29,9 @@ class Message
     #[ORM\Column]
     private ?bool $isDelete = null;
 
+    #[ORM\Column]
+    private ?bool $isImage = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +93,18 @@ class Message
     public function setIsDelete(bool $isDelete): static
     {
         $this->isDelete = $isDelete;
+
+        return $this;
+    }
+
+    public function isIsImage(): ?bool
+    {
+        return $this->isImage;
+    }
+
+    public function setIsImage(bool $isImage): static
+    {
+        $this->isImage = $isImage;
 
         return $this;
     }
