@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Service\User\VerifyUserService;
 use App\Entity\Message;
 use App\Entity\Room;
+use App\Entity\ImageManager;
 use App\Service\CryptMessageService;
 use DateTimeImmutable;
 
@@ -24,7 +25,7 @@ class CreateMessageService{
         $this->cryptMessage = $cryptMessage;
     }
 
-    public function createMessage($data, $jwt){
+    public function createMessage($data, $jwt, $isImage){
         $userId = $data["user_id"];
         $roomId = $data['room_id'];
         $messageValue = $data['message_value'];
@@ -69,6 +70,9 @@ class CreateMessageService{
         ->setCreatedAt($date)
         ->setIsDelete(false)
         ->setIsImage(false);
+        if($isImage){
+            $message->setIsImage(true);
+        }
 
         try {
             $this->entityManager->persist($message);
@@ -84,10 +88,34 @@ class CreateMessageService{
                 $this->entityManager->persist($room);
                 $this->entityManager->flush();
 
-                return[
-                    "code" => 200,
-                    "message" => "message envoyé"
-                ];
+                if(!$isImage){
+                    return[
+                        "code" => 200,
+                        "message" => "message envoyé"
+                    ];
+                }
+
+                try{
+                    //fais le lien entre l'image et les datas
+                    $messageManager = new ImageManager();
+                    $messageManager->setName($cryptedMessage)
+                    ->setRoom($roomId)
+                    ->setUser($userId)
+                    ->setType($data['file_extension']);
+
+                    $this->entityManager->persist($messageManager);
+                    $this->entityManager->flush();
+                    return[
+                        "code" => 200,
+                        "message" => "image envoyé"
+                    ];
+                }catch(\Exception $e){
+                    return [
+                        'code' => 400,
+                        'error' => $e->getMessage()
+                    ];
+                }
+
             } catch (\Exception $e) {
                 return [
                     'code' => 400,

@@ -21,7 +21,25 @@ class CryptMediaService{
         return json_encode($encryptedData);
     }
     
-    public function decryptMedia(){
-        
+    public function decryptMedia($encryptedData)
+    {
+        $key = $_ENV['MESSAGE_CRYPT_KEY'];
+        $key = base64_decode($key);
+        try {
+            $mediaData = json_decode($encryptedData, true);
+            $iv = base64_decode($mediaData['iv']);
+            
+            // Assurez-vous que le contenu crypté est également décodé en base64
+            $encryptedData = base64_decode($mediaData['encrypted']);
+    
+            // Décrypter en utilisant les données binaires
+            $decryptedMedia = openssl_decrypt($encryptedData, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
+            return $decryptedMedia;
+        } catch (\Exception $e) {
+            // Log de l'erreur pour le débogage
+            // error_log($e->getMessage());
+            return "";
+        }
     }
+    
 }

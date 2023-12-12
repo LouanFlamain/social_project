@@ -82,11 +82,16 @@ class GetMessageService{
                 $message_user_username = $user->getUsername();
 
                 //crée l'objet de réponse
+                $isImage = $message->isIsImage();
+                if($isImage){
+                    $decrypted_message_value = $_ENV['PATH_API'].$crypted_message_value;
+                }
 
                 $message_object = [
-                    "message_username" => $message_user_username,
-                    "message_value" => $decrypted_message_value,
-                    "message_created" => $message->getCreatedAt()
+                    "username" => $message_user_username,
+                    "value" => $decrypted_message_value,
+                    "createdAt" => $message->getCreatedAt(),
+                    "is_image" => $isImage
                 ];
 
                 array_push($message_response, $message_object);
@@ -95,7 +100,7 @@ class GetMessageService{
         }
         return [
             "code" => 200,
-            "message" => $message_response
+            "data" => $message_response
         ];
     }
 }
