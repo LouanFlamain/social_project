@@ -15,6 +15,7 @@ use App\Service\Message\GetImageService;
 use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use App\Service\Mercure\MercureService;
 
 class MessageController extends AbstractController
 {
@@ -99,6 +100,13 @@ class MessageController extends AbstractController
         } else {
             return new JsonResponse($result, $result['code']);
         }
+    }
+    #[Route('/api/test', name: "test", methods: "POST")]
+    public function testMercure(Request $request, MercureService $mercure){
+        $data = json_decode($request->getContent(), true);
+        $message = $data['message'];
+        $result = $mercure->mercureMessage($message);
+        return new JsonResponse($result, $result['code']);
     }
     
     
