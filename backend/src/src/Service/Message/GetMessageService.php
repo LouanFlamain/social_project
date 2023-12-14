@@ -89,6 +89,7 @@ class GetMessageService{
 
                 $message_object = [
                     "username" => $message_user_username,
+                    "user_id" => $message_user_id,
                     "value" => $decrypted_message_value,
                     "createdAt" => $message->getCreatedAt(),
                     "is_image" => $isImage

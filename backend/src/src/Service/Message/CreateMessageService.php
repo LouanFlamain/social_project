@@ -8,7 +8,9 @@ use App\Service\User\VerifyUserService;
 use App\Entity\Message;
 use App\Entity\Room;
 use App\Entity\ImageManager;
+use App\Entity\User;
 use App\Service\CryptMessageService;
+use App\Service\Mercure\MercureService;
 use DateTimeImmutable;
 
 class CreateMessageService{
@@ -17,12 +19,14 @@ class CreateMessageService{
     private $verifyUserService;
     private $roomRepository;
     private $cryptMessage;
+    private $mercureService;
 
-    public function __construct(EntityManagerInterface $entityManager, VerifyUserService $verifyUserService, RoomRepository $roomRepository, CryptMessageService $cryptMessage){
+    public function __construct(EntityManagerInterface $entityManager, VerifyUserService $verifyUserService, RoomRepository $roomRepository, CryptMessageService $cryptMessage, MercureService $mercureService){
         $this->entityManager = $entityManager;
         $this->verifyUserService = $verifyUserService;
         $this->roomRepository = $roomRepository;
         $this->cryptMessage = $cryptMessage;
+        $this->mercureService = $mercureService;
     }
 
     public function createMessage($data, $jwt, $isImage){
@@ -64,6 +68,7 @@ class CreateMessageService{
         $message = new Message();
         $date = new DateTimeImmutable();
 
+
         $message->setValue($cryptedMessage)
         ->setUserId($userId)
         ->setRoomId($roomId)
@@ -77,6 +82,23 @@ class CreateMessageService{
         try {
             $this->entityManager->persist($message);
             $this->entityManager->flush();
+
+            //update mercure
+
+            $userRepository = $this->entityManager->getRepository(User::class);
+            $user = $userRepository->find($userId);
+            $username = $user->getUsername();
+
+
+            $mercureData = [
+                "username" => $username,
+                'message_value' => $messageValue,
+                "user_id" => $userId,
+                "message_date" => $date,
+                "is_image" => $isImage
+            ];
+
+            $this->mercureService->mercureMessage($mercureData, $roomId);
 
             //mets à jour le dernier message de la room
 
