@@ -41,15 +41,17 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
 
         $response = new JsonResponse([
             'success' => true,
-            'token' => $jwtToken,
-            'mercure_token' => $mercureToken,
-            'email' => $user->getEmail(),
-            'username' => $user->getUsername(),
-            'creation_date' => $user->getCreatedAt(),
-            'role' => $user->getRoles(),
-            'id' => $user->getId(),
-            'image' => $user->getImageProfile()
-        ]);
+            'data' => [
+                'token' => $jwtToken,
+                'mercure_token' => $mercureToken,
+                'email' => $user->getEmail(),
+                'username' => $user->getUsername(),
+                'creation_date' => $user->getCreatedAt(),
+                'role' => $user->getRoles(),
+                'id' => $user->getId(),
+                'image' => $user->getImageProfile()
+            ]
+         ]);
 
         return $response;
     }
