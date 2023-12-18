@@ -12,7 +12,8 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/http.d/default.conf
       - ./src:/var/www/html
-
+      - vendor:/var/www/html/vendor
+      - var:/var/www/html/var
   db:
     image: mariadb:latest
     restart: always
@@ -49,3 +50,5 @@ services:
 
 volumes:
   db-data:
+  vendor:
+  var:
