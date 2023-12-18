@@ -18,9 +18,7 @@ function NewDiscussion(): JSX.Element {
 
   return (
     <SafeAreaView >
-        <View>
-            
-        </View>
+        
       
     </SafeAreaView>
   );

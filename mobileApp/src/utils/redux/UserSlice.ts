@@ -12,7 +12,8 @@ interface UserSlice {
   IsSuccess?:boolean | null
 }
 
-interface User {
+export interface User {
+    id?: number, 
     image?: string,
     token?:string,
     mercure_token?:string,
@@ -77,6 +78,9 @@ export const selectState = (state: RootState) => state.user;
 export const selectUser = (state: RootState) => state.user.user;
 export const selectIsLoggedIn = (state: RootState) => state.user.IsSuccess;
 export const selectIsLoading = (state: RootState) => state.user.isLoading;
+export const useToken = (state: RootState) => state.user.user?.token;
+export const useId = (state: RootState) => state.user.user?.id;
+
 
 export const { logout } = UserSlice.actions;
 

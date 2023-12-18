@@ -11,7 +11,7 @@ interface ListMessageProps {
   id: number,
   image?: string,
   pseudo: string,
-  message: string,
+  message?: string,
   date : string
 
 }
@@ -31,7 +31,7 @@ const ListMessage: React.FC<ListMessageProps> = ({id, pseudo, message, date }) =
         <Text variant='bodyMedium'>
           {pseudo}
         </Text>
-        <Text variant='bodySmall'>{truncate(message)}</Text>
+        <Text variant='bodySmall'>{truncate(message ? message : "Pas encore de messages")}</Text>
         </View>
       </View>
       <Text variant='bodySmall'>{date}</Text>

@@ -1,48 +1,86 @@
-import React from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { Button, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import SearchBar from '../components/SearchBar';
 import AvatarItem from '../components/Avatar';
 import ListMessage from '../components/ListMessage';
 import TabButtons from '../components/TabButtons';
+import { useAppSelector } from '../utils/redux/hook';
+import { useToken, useId } from '../utils/redux/UserSlice';
+import { GetChats } from '../utils/services/ChatRoomService';
+
+
+export interface ConversationItem{
+  id: number,
+  room_name: string, 
+  users_id: Array<Number>,
+  usernames: Array<string>,
+  multi_participant: boolean, 
+  last_message_value?: string,
+  time: Time
+}
+
+export interface Time{
+  last_message_date: string,
+  last_message_hour: string, 
+  last_message_day: string, 
+  timestamp: number
+}
 
 function Messages(): JSX.Element {
-  const navigation = useNavigation();
+  const [conversations, setConversations] = useState([])
+  const [conversationSearch, setConversationSearch] = useState([])
+  const [filtre, setFiltre] = useState()
+  const isMounted =  useRef(false)
+  const token = useAppSelector(useToken)
+const id = useAppSelector(useId)
 
-  const handleLogin = () => {
-    navigation.navigate('Login' as never);
-  };
+const handleSearch = (searchValue: string, filtre : string) => {
+  if (searchValue !== "" ) {
+    setConversationSearch(conversations.filter((el) => el.usernames[0].includes(searchValue)));
+  } else {
+    setConversationSearch(conversations); // Clear search results when the search value is empty
+  }
+};
 
-  const handleSearch = (searchValue : string) => {
-    // Implémente la logique de recherche ici
-    console.log(`Recherche en cours pour : ${searchValue}`);
-  };
-
-  const tabsButtons = [
-    {
-      value : "groupe",
-      label : "groupe"
-    },
-    {
-      value : "amis",
-      label : "amis"
+  useEffect(() => {
+    if (!isMounted.current) {
+      getConversations();
+      isMounted.current = true;
     }
-  ]
+  }, [isMounted]);
 
-  const conversations = [
-    {
-      id: 1,
-      pseudo : "Marie",
-      message: "Salut comment tu vas ????????????????????????????????????????????????? ?",
-      date : "07/09/2022"
-    },
-    {
-      id: 2,
-      pseudo : "Lucas",
-      message: "OOOOOOOOOOOOOOOOOOOOOOOOOOh",
-      date : "07/09/2022"
-    },
-  ]
+  const getConversations = async () => {
+    try {
+      const response = await GetChats(id, token);
+      setConversations(response);
+    } catch (error) {
+      console.error('Error fetching conversations:', error);
+    }
+  };
+
+  // const handleFiltres = (filtre: string) =>{
+  //   const isGroup = filtre === "groupe" ? true : false
+  //   if(conversationSearch.length > 0){
+  //     setConversationSearch(conversationSearch.filter((el) => el.multi_participant === isGroup))
+  //   }else{
+  //     setConversationSearch(conversations.filter((el) => el.multi_participant === isGroup))
+  //   }
+    
+
+  // }
+
+  // const tabsButtons = [
+  //   {
+  //     value : "groupe",
+  //     label : "groupe"
+  //   },
+  //   {
+  //     value : "amis",
+  //     label : "amis"
+  //   }
+  // ]
+
+  console.log(conversations)
 
 
   return (
@@ -51,17 +89,27 @@ function Messages(): JSX.Element {
         <Text>Messages</Text>
       </View>
       <View style={styles.messagesContainer}>
-      <TabButtons buttons={tabsButtons}/>
+      {/* <TabButtons buttons={tabsButtons} handleFiltres={handleFiltres}/> */}
       <SearchBar onSearch={handleSearch} variant="light" placeholder={"Cherchez une discussion"}/>
-        <Button title="Login" onPress={handleLogin} />
         <AvatarItem size={"large"} />
-        {conversations?.map((conversation)=>(
-          <ListMessage 
-          key={conversation.id}
-          id={conversation.id} 
-          pseudo={conversation.pseudo}
-          message={conversation.date} 
-          date={conversation.date} />
+        {conversationSearch.length > 0 ? (
+          conversationSearch.map((conversation: ConversationItem) => (
+            <ListMessage
+              key={conversation.id}
+              id={conversation.id}
+              pseudo={conversation?.usernames[0] ?? "Unknown User"}
+              message={conversation.last_message_value ?? "Unknown User"}
+              date={conversation.time.last_message_hour ?? "Unknown User"}
+            />
+          ))
+        ) : conversations.map((conversation: ConversationItem) => (
+          <ListMessage
+            key={conversation.id}
+            id={conversation.id}
+            pseudo={conversation?.usernames[0] ?? "Unknown User"}
+            message={conversation.last_message_value ?? "Unknown User"}
+            date={conversation.time.last_message_hour ?? "Unknown User"}
+          />
         ))}
         
        

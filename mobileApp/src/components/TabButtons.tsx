@@ -3,7 +3,8 @@ import { View, TextInput, Button, StyleSheet } from 'react-native';
 import { SegmentedButtons } from 'react-native-paper';
 
 interface TabButtonsProp {
-    buttons: ButtonType[]
+    buttons: ButtonType[],
+    handleFiltres: any
 }
 
 interface ButtonType{
@@ -11,15 +12,20 @@ interface ButtonType{
     label : string
 }
 
-const TabButtons:  React.FC<TabButtonsProp> = ({buttons}) => {
+const TabButtons:  React.FC<TabButtonsProp> = ({buttons, handleFiltres}) => {
 const [value, setValue] = React.useState('');
+
+const handleValue = (text : string) =>{
+setValue(text)
+handleFiltres(text)
+}
 
   return (
     <View >
         <SegmentedButtons
         buttons={buttons}
         value={value}
-        onValueChange={setValue}
+        onValueChange={handleValue}
         style={styles.tab}/>
 
     </View>
