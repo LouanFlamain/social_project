@@ -61,11 +61,6 @@ function HomeTabs() {
 const Navigation = () => {
     const isLoggedIn = useAppSelector(selectIsLoggedIn)
     const state = useAppSelector(selectState)
-
-    console.log(state)
-
-
-    console.log(isLoggedIn)
   return (
     <NavigationContainer>
 
