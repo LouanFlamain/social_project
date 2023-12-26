@@ -23,12 +23,12 @@ class UserController extends AbstractController
     {
     }
 
-    #[Route('/api/users', name: "get.users", methods: "get")]
-    public function getUsers(Request $request, GetUsersService $GetUsersService)
+    #[Route('/api/users/{id}', name: "get.users", methods: "get")]
+    public function getUsers(Request $request, GetUsersService $GetUsersService, $id)
     {
         $data = json_decode($request->getContent(), true);
         $jwt = $request->headers->get('Authorization');
-        $result = $GetUsersService->getUsers($data, $jwt);
+        $result = $GetUsersService->getUsers(['id' => $id], $jwt);
         return new JsonResponse($result, $result['code']);
     }
 }

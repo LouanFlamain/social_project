@@ -20,9 +20,9 @@ class GetUsersService
         $this->roomRepository = $roomRepository;
     }
 
-    public function getUsers($data, $jwt)
+    public function getUsers($id, $jwt)
     {
-        $excludeUserId = $data['user_id'];
+        $excludeUserId = $id;
 
         $userRepository = $this->entityManager->getRepository(User::class);
 
