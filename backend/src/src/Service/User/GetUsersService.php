@@ -26,7 +26,13 @@ class GetUsersService
 
         $userRepository = $this->entityManager->getRepository(User::class);
 
-
+        $userVerification = $this->verifyUserService->verifyUser($excludeUserId, $jwt);
+        if (!$userVerification) {
+            return [
+                "code" => 404,
+                "message" => "la personne connecté et le demandeur des utilisateurs ne sont pas les mêmes"
+            ];
+        }
 
         try {
             $users = $userRepository->createQueryBuilder('u')
@@ -37,7 +43,6 @@ class GetUsersService
 
             $userArray = [];
             foreach ($users as $user) {
-                // Build an array with the user information you want to include
                 $userArray[] = [
                     'id' => $user->getId(),
                     'email' => $user->getEmail(),
