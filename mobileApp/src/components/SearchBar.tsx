@@ -19,7 +19,7 @@ const SearchBar:  React.FC<SearchBarProp> = ({ onSearch, variant, placeholder}) 
       <TextInput
         style={variant === "light" ? styles.inputLight : styles.input}
         placeholder={placeholder}
-        placeholderTextColor={variant === 'light' ? "#E8E8E8" : "default"}
+        placeholderTextColor={variant === 'light' ? "#E8E8E8" : "black"}
         value={searchValue}
         onChangeText={(text) => handleSearch(text)}
         inlineImageLeft = {variant=== 'light' ?  'search_light' : 'search'}
@@ -45,6 +45,8 @@ const styles = StyleSheet.create({
     padding: 8,
     borderWidth: 1,
     borderRadius: 10,
+    color: "black",
+    borderColor:"black",
   },
   inputLight: {
     flex: 1,
