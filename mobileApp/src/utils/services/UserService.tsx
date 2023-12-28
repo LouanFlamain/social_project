@@ -54,14 +54,15 @@ export const register = async (credentials: { username: string; password: string
 
 
 
-export const getUsers = async (credentials: { username: string; password: string, email:string, check_password:string }) => {
+
+export const getUsers = async (userId: number| undefined, token: string) => {
     try {
-        const response = await fetch(`${BACKEND_URL}/register`, {
-            method: 'POST',
+        const response = await fetch(`${BACKEND_URL}/users/${userId}`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify(credentials),
         });
 
         if (!response.ok) {
@@ -71,10 +72,10 @@ export const getUsers = async (credentials: { username: string; password: string
         }
 
         const responseData = await response.json();
-        console.log('Login successful:', responseData);
-        return responseData;
+        console.log('Users fetched successfully:', responseData);
+        return responseData.users;
     } catch (error) {
-        console.error('Login failed:', error);
+        console.error('Failed to fetch users:', error);
         throw error;
     }
 };

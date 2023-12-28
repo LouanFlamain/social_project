@@ -27,7 +27,7 @@ class RoomController extends AbstractController
         return new JsonResponse($result, $result['code']);
     }
 
-    #[Route('/api/get_rooms', name: "room.get", methods: "get")]
+    #[Route('/api/get_rooms', name: "room.get", methods: "post")]
     public function getRoom(GetRoomService $roomService, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
