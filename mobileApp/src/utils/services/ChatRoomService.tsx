@@ -27,3 +27,35 @@ export const GetChats = async (id : number, token : string) => {
         throw error;
     }
 };
+
+
+interface newRoomData {
+    users : number[],
+    message_value : string,
+    name : string
+}
+export const newRoom = async (token : string|undefined, data : newRoomData) => {
+    try {
+        const response = await fetch(`${BACKEND_URL}/create_room`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : `Bearer ${token}`
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Server error:', errorData);
+            throw errorData;
+        }
+
+        const responseData = await response.json();
+        return responseData.data;
+    } catch (error) {
+        console.error('Get failed:', error);
+        
+        throw error;
+    }
+};
