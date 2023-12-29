@@ -2,7 +2,7 @@ import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import Messages from './screens/Messages';
 import Settings from './screens/Settings';
-import NewDiscussion from './screens/NewDiscussion';
+import NewDiscussion from './screens/NewDiscussions/NewDiscussion';
 import Login from './screens/Login';
 import Register from './screens/Register';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
