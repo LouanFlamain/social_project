@@ -59,3 +59,35 @@ export const newRoom = async (token : string|undefined, data : newRoomData) => {
         throw error;
     }
 };
+
+
+interface NameRoomData {
+    room_id: number, 
+    request_user: number, 
+    room_name: string
+}
+export const ChangeName = async (token : string|undefined, data : NameRoomData) => {
+    try {
+        const response = await fetch(`${BACKEND_URL}/room/name_update`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : `Bearer ${token}`
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Server error:', errorData);
+            throw errorData;
+        }
+
+        const responseData = await response.json();
+        return responseData.data;
+    } catch (error) {
+        console.error('Get failed:', error);
+        
+        throw error;
+    }
+};
