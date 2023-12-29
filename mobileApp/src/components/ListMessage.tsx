@@ -12,12 +12,13 @@ interface ListMessageProps {
   image?: string,
   pseudo: string,
   message?: string,
-  date : string
+  date : string,
+  room_name : string
 
 }
 
 
-const ListMessage: React.FC<ListMessageProps> = ({id, pseudo, message, date }) => {
+const ListMessage: React.FC<ListMessageProps> = ({id, pseudo, message, date, room_name}) => {
   const navigation = useNavigation();
 
 
@@ -29,7 +30,7 @@ const ListMessage: React.FC<ListMessageProps> = ({id, pseudo, message, date }) =
       <AvatarItem size={"small"} />
       <View>
         <Text variant='bodyMedium'>
-          {pseudo}
+         {truncate(room_name)}
         </Text>
         <Text variant='bodySmall'>{truncate(message ? message : "Pas encore de messages")}</Text>
         </View>
