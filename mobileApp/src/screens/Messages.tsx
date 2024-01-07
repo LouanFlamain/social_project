@@ -8,6 +8,9 @@ import { useToken, useId, logout } from '../utils/redux/UserSlice';
 import { GetChats } from '../utils/services/ChatRoomService';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../components/Header';
+import RNEventSource from 'rn-eventsource-reborn';
+
+
 
 
 export interface ConversationItem{
@@ -62,9 +65,21 @@ const handleSearch = (searchValue: string, filtre : string) => {
         navigation.navigate('Login' as never);
       }
     }
-  };
+  };    
+  
+  const options = { headers: { Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsb2NhbGhvc3QiLCJhdWQiOiJsb2NhbGhvc3Q6OTA5MCIsImp0aSI6ImNmMjhmNDM1NTFmNmZlZGMzY2ZiNmE4MGIyNTBlN2I4IiwiaWF0IjoxNzAzOTQ3MDAxLjUzNzY5OCwibmJmIjoxNzAzOTQ3MDAxLjUzNzcsImV4cCI6MTcwNDAzMzQwMS41Mzc3NjMsIm1lcmN1cmUiOnsicHVibGlzaCI6WyIqIl19fQ.dLtDPlM0L6oVUTIeq5KjYHNmsuZpTf_3MNIPmZIT4SI' } };
 
-  console.log(conversations)
+const topicUrl = 'http://10.0.2.2:9090/.well-known/mercure?topic=chat_room_2';
+
+
+useEffect(() => {
+  const source = new RNEventSource(topicUrl, options)
+
+source.addEventListener('open', (event) => {
+    console.log('Connection was opened!');
+});
+}, []);
+
 
 
   return (
