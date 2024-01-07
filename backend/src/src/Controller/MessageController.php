@@ -101,15 +101,6 @@ class MessageController extends AbstractController
             return new JsonResponse($result, $result['code']);
         }
     }
-    #[Route('/api/test', name: "test", methods: "POST")]
-    public function testMercure(Request $request, MercureService $mercure){
-        $data = json_decode($request->getContent(), true);
-        $message = $data['message'];
-        $result = $mercure->mercureMessage($message);
-        return new JsonResponse($result, $result['code']);
-    }
     
-    
-
     
 }
