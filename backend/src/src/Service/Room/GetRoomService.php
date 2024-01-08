@@ -133,7 +133,7 @@ class GetRoomService{
                     "id" => $room->getId(),
                     "room_name" => $room_name,
                     "users_id" => $users,
-                    'usernames' => $room_users,
+                    'usernames' => implode(", ", $room_users),
                     "multi_participant" => $room->getGroups(),
                     "last_message_value" => $decrypted_message,
                     "time" => [
@@ -159,5 +159,61 @@ class GetRoomService{
                 'error' => $e->getMessage()
             ];
         }
+    }
+    public function getUniqueRoom($roomId, $userId, $jwt){
+        if(empty($userId) || empty($roomId)){
+            return [
+                "code" => 400,
+                "message" => "champs manquants"
+            ];
+        }
+
+        $email_extract = $this->JwtExtractEmail->extractInformations($jwt);
+        $userRepository = $this->entityManager->getRepository(User::class);
+        $user = $userRepository->find($userId);
+        $userEmail = $user->getEmail();
+        if (!$userEmail) {
+            throw new ErrorException("aucun email associé à l'id ". $userId);
+        }
+        
+        if($email_extract !== $userEmail){
+            return[
+                "code" => 404,
+                "message" => "failed load rooms"
+            ];
+        }
+
+        try{
+            $usersArray = [];
+
+            $room = $this->roomRepository->find($roomId);
+            $userRepository = $this->entityManager->getRepository(User::class);
+            $roomUsers = $room->getUsers();
+            foreach(json_decode($roomUsers) as $roomUser){
+                if($roomUser != $userId){
+                $user = $userRepository->find($roomUser);
+                $username = $user->getUsername();
+                $image = $user->getImageProfile();
+                
+                $userData = array(
+                    "username" => $username,
+                    "user_id" => $roomUser,
+                    "image" => $image
+                );
+                array_push($usersArray, $userData);
+            }
+
+            }
+            return [
+                "code" => 200,
+                "data" => $usersArray
+            ];
+        }catch(\ErrorException $e){
+            return[
+                "code" => 404,
+                "message" => "failed load room"
+            ];
+        }        
+        
     }
 }

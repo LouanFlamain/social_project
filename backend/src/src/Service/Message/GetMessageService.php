@@ -99,9 +99,18 @@ class GetMessageService{
             }
 
         }
+        if(empty($message_response)){
+            return [
+                "code" => 400,
+                "message" => "error"
+            ];
+        }
+
+        $reverseArray = array_reverse($message_response);
+
         return [
             "code" => 200,
-            "data" => $message_response
+            "data" => $reverseArray
         ];
     }
 }
