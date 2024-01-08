@@ -29,6 +29,7 @@
     "react-native-sse": "^1.2.0",
     "react-native-svg": "^14.0.0",
     "react-native-tailwindcss": "^1.1.11",
+    "react-native-url-polyfill": "^2.0.0",
     "react-native-vector-icons": "^10.0.2",
     "react-redux": "^9.0.4",
     "redux-persist": "^6.0.0",

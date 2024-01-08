@@ -80,6 +80,7 @@ export const selectIsLoggedIn = (state: RootState) => state.user.IsSuccess;
 export const selectIsLoading = (state: RootState) => state.user.isLoading;
 export const useToken = (state: RootState) => state.user.user?.token;
 export const useId = (state: RootState) => state.user.user?.id;
+export const selectMercureToken = (state: RootState) => state.user.user?.mercure_token;
 
 
 export const { logout } = UserSlice.actions;

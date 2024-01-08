@@ -19,8 +19,6 @@ interface createdAtTypes{
 
 const MessageComponent = (props : { conversation: conversationProps, isMe : boolean}) => {
 
-    console.log(props.isMe)
-
   // Parse createdAt.date into a Date object
   const dateObject = new Date(props.conversation.createdAt.date);
 

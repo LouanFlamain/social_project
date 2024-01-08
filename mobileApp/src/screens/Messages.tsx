@@ -7,8 +7,9 @@ import { useAppDispatch } from '../utils/redux/hook';
 import { useToken, useId, logout } from '../utils/redux/UserSlice';
 import { GetChats } from '../utils/services/ChatRoomService';
 import { useNavigation } from '@react-navigation/native';
-import Header from '../components/Header';
-import RNEventSource from 'rn-eventsource-reborn';
+import Mercure from '../utils/Mercure/Mercure';
+
+
 
 
 
@@ -58,6 +59,7 @@ const handleSearch = (searchValue: string, filtre : string) => {
     try {
       const response = await GetChats(id, token);
       setConversations(response);
+      console.log(response)
     } catch (error: any) {
       console.error('Error fetching conversations:', error);
       if(error.code === 401){
@@ -65,21 +67,25 @@ const handleSearch = (searchValue: string, filtre : string) => {
         navigation.navigate('Login' as never);
       }
     }
-  };    
-  
-  const options = { headers: { Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsb2NhbGhvc3QiLCJhdWQiOiJsb2NhbGhvc3Q6OTA5MCIsImp0aSI6ImNmMjhmNDM1NTFmNmZlZGMzY2ZiNmE4MGIyNTBlN2I4IiwiaWF0IjoxNzAzOTQ3MDAxLjUzNzY5OCwibmJmIjoxNzAzOTQ3MDAxLjUzNzcsImV4cCI6MTcwNDAzMzQwMS41Mzc3NjMsIm1lcmN1cmUiOnsicHVibGlzaCI6WyIqIl19fQ.dLtDPlM0L6oVUTIeq5KjYHNmsuZpTf_3MNIPmZIT4SI' } };
-
-const topicUrl = 'http://10.0.2.2:9090/.well-known/mercure?topic=chat_room_2';
+  }; 
 
 
-useEffect(() => {
-  const source = new RNEventSource(topicUrl, options)
+  // Change conversations when new message where send without sending request to API.
+  const Onchange = (value : any, roomData : number) =>{
+  // const updatedConversations = conversations.map((conversation : ConversationItem) => {
+  //   if (conversation.room_name === roomData) {
+  //     return {
+  //       ...conversation,
+  //       last_message_value: value,
+  //     };
+  //   }
+  //   return conversation;
+  // });
 
-source.addEventListener('open', (event) => {
-    console.log('Connection was opened!');
-});
-}, []);
+  // setConversations(updatedConversations);
+  getConversations()
 
+  }
 
 
   return (
@@ -113,6 +119,10 @@ source.addEventListener('open', (event) => {
             multiparticipant = {conversation.multi_participant}
             room_name={conversation.room_name}
           />
+        ))}
+
+        {conversations.map((conversation : ConversationItem)=>(
+            <Mercure topic={`chat_room_${conversation.id}`} Onchange={Onchange} roomdata={conversation.id}/>
         ))}
         
        

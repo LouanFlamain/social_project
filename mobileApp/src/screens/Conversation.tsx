@@ -4,6 +4,8 @@ import {
   StyleSheet,
   Text,
   View,
+  FlatList,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../utils/redux/hook';
 import { useToken, useId, logout } from '../utils/redux/UserSlice';
@@ -14,6 +16,8 @@ import Header from '../components/Header';
 import MessageComponent from '../components/Message';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as SolidIcons from 'react-native-heroicons/solid';
+import Mercure from '../utils/Mercure/Mercure';
+
 
 
 interface ConversationProp {
@@ -22,7 +26,6 @@ interface ConversationProp {
 
 function Conversations<ConversationProp>({ route }): JSX.Element {
   const { id } = route.params;
-  console.log(route)
   const [conversations, setConversations] = useState([]);
   const [room, setRoom] = useState();
   const [message, setMessage] = useState('');
@@ -34,17 +37,16 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
   const navigation = useNavigation();
 
   useEffect(() => {
-    if (!isMounted.current) {
+  if (!isMounted.current) {
       getConversation();
-      isMounted.current = true;
-    }
-  }, [isMounted]);
+    isMounted.current = true;
+  }
+}, [isMounted]);
 
   const getConversation = async () => {
     try {
-      const response = await getMessages(token, user_id, id);
-      console.log(response.data);
-      setConversations(response.data.message_response.reverse());
+      const response = await getMessages(token, user_id, route.params);
+      setConversations(response.data.message_response);
       setRoom(response.data.room_data);
     } catch (error: any) {
       console.error('Error fetching conversations:', error);
@@ -56,16 +58,16 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
   };
 
   const SendMessage = async () =>{
+    console.log(message.length)
      if (message.length > 0){
       try {
      
         const res = await CreateMessage(token, user_id, id, message)
-        console.log(res)
         const response = await getMessages(token, user_id, id);
         console.log(response.data);
   
         // Update the state with the new conversation messages
-        setConversations(response.data.message_response.reverse());
+        setConversations(response.data.message_response);
         setMessage(''); // Clear the input field
         
       } catch (error) {
@@ -76,27 +78,57 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
    
   }
 
+  const Onchange = (value : any) =>{
+    console.log(value)
+
+  const convs = conversations
+  const newConvs = conversations.unshift(value)
+  setConversations(conversations)
+  console.log("done")
+  }
+
+
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header title={room?.name ? room.name : "No title"} />
 
-      <ScrollView>
-        {conversations.length > 0 ? conversations.map((conversation, index) => {
-          const isMe = conversation.user_id === user_id ? true : false;
-          return <MessageComponent key= {index} conversation={conversation} isMe={isMe} />;
-        }) : null}
-      </ScrollView>
+      {conversations ? 
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          label="Ecrire un message"
-          value={message}
-          onChangeText={text => setMessage(text)}
-          right={<TextInput.Icon icon={SolidIcons.PaperAirplaneIcon} onPress={SendMessage}/>}
+<ScrollView>
+{conversations.length > 0 ? conversations.map((conversation, index) => {
+  const isMe = conversation.user_id === user_id ? true : false;
+  return <MessageComponent key={conversation.id} conversation={conversation} isMe={isMe} />;
+}) : null}
+</ScrollView>
       
-        />
-      </View>
-    </SafeAreaView>
+      
+      : null}
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            label="Ecrire un message"
+            value={message}
+            onChangeText={(text) => setMessage(text)}
+            right={
+              <TextInput.Icon
+                icon={SolidIcons.PaperAirplaneIcon}
+                onPress={SendMessage}
+              />
+            }
+          />
+        </View>
+
+
+
+
+     {id ? 
+           <Mercure topic={`chat_room_${id}`} Onchange={Onchange} roomdata={id} />
+     : null}
+
+          </View>
+
+  
   );
 }
 

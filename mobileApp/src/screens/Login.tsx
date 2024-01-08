@@ -16,10 +16,7 @@ function Login(): JSX.Element {
   const [errorMessage, setError] = useState('')
   const navigation = useNavigation();
   const dispatch = useAppDispatch()
-  const isSuccess = useAppSelector(selectIsLoggedIn)
   const isLoading = useAppSelector(selectIsLoading)
-
-  console.log(isSuccess)
 
 
   const handleLogin = async () => {
