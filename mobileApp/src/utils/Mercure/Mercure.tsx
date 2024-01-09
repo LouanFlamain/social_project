@@ -28,7 +28,7 @@ const Mercure: React.FC<MercureProps> = ({topic, Onchange, roomdata}) => {
         if (event.type === "open") {
           console.log("Open SSE connection.");
         } else if (event.type === "message") {
-            console.log(event.data)
+          console.log(event.data)
             Onchange(event.data);
         } else if (event.type === "error") {
           console.error("Connection error:", event.message);

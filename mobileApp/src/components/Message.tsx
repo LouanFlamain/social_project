@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import AvatarItem from './Avatar';
 
-interface conversationProps{
+export interface conversationProps{
     username: string, 
     user_id: string, 
     value: string, 
@@ -11,13 +11,21 @@ interface conversationProps{
 
 }
 
-interface createdAtTypes{
-    date : string, 
+export interface createdAtTypes{
+    date: string, 
     timezone_type: number, 
     timezone : string
 }
 
-const MessageComponent = (props : { conversation: conversationProps, isMe : boolean}) => {
+const MessageComponent = (props : { conversation: any, isMe : boolean}) => {
+
+
+    // Assurez-vous que createdAt est défini
+    if (!props.conversation.createdAt || !props.conversation.createdAt.date) {
+      const ennui = JSON.parse(props.conversation)
+      console.log(ennui)
+      return null; // Ou renvoyez un composant de remplacement / vide selon vos besoins
+    }
 
   // Parse createdAt.date into a Date object
   const dateObject = new Date(props.conversation.createdAt.date);

@@ -17,6 +17,7 @@ import MessageComponent from '../components/Message';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as SolidIcons from 'react-native-heroicons/solid';
 import Mercure from '../utils/Mercure/Mercure';
+import { ConversationItem } from './Messages';
 
 
 
@@ -26,7 +27,7 @@ interface ConversationProp {
 
 function Conversations<ConversationProp>({ route }): JSX.Element {
   const { id } = route.params;
-  const [conversations, setConversations] = useState([]);
+  const [conversations, setConversations] = useState<ConversationItem[]>();
   const [room, setRoom] = useState();
   const [message, setMessage] = useState('');
 
@@ -37,11 +38,8 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
   const navigation = useNavigation();
 
   useEffect(() => {
-  if (!isMounted.current) {
       getConversation();
-    isMounted.current = true;
-  }
-}, [isMounted]);
+}, []);
 
   const getConversation = async () => {
     try {
@@ -78,18 +76,23 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
    
   }
 
-  const Onchange = (value : any) =>{
-    console.log(value)
 
-  const convs = conversations
-  const newConvs = conversations.unshift(value)
-  setConversations(conversations)
-  console.log("done")
+  const setConvoc = (value) =>{
+    const newValue = JSON.parse(value)
+    const newConvs = [...conversations, newValue];
+    console.log(newConvs)
+    setConversations(newConvs);
+
+  }
+
+  const handleChange = (value) =>{
+    setConvoc(value)
   }
 
 
 
   return (
+    <>
     <View style={styles.container}>
       <Header title={room?.name ? room.name : "No title"} />
 
@@ -98,7 +101,7 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
 <ScrollView>
 {conversations.length > 0 ? conversations.map((conversation, index) => {
   const isMe = conversation.user_id === user_id ? true : false;
-  return <MessageComponent key={conversation.id} conversation={conversation} isMe={isMe} />;
+  return <MessageComponent key={index} conversation={conversation} isMe={isMe} />;
 }) : null}
 </ScrollView>
       
@@ -118,15 +121,15 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
             }
           />
         </View>
+        </View>
 
 
 
 
-     {id ? 
-           <Mercure topic={`chat_room_${id}`} Onchange={Onchange} roomdata={id} />
-     : null}
+        <Mercure topic={`chat_room_${id}`} Onchange={handleChange} roomdata={id} />
 
-          </View>
+
+          </>
 
   
   );
