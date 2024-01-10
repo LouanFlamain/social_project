@@ -71,7 +71,7 @@ const handleSearch = (searchValue: string, filtre : string) => {
 
 
   // Change conversations when new message where send without sending request to API.
-  const Onchange = (value : any, roomData : number) =>{
+  const Onchange = (value : any) =>{
   // const updatedConversations = conversations.map((conversation : ConversationItem) => {
   //   if (conversation.room_name === roomData) {
   //     return {

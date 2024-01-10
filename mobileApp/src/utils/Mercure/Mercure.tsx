@@ -5,10 +5,11 @@ import { selectMercureToken } from '../redux/UserSlice';
 import { useAppSelector } from '../redux/hook';
 import { MERCURE_URL } from '@env';
 
+import { ConversationItem } from '../../screens/Messages';
 interface MercureProps {
     topic: string,
-    Onchange? : any,
-    roomdata?: number
+    Onchange: () => void,
+    roomdata?: number,
 }
 
 const Mercure: React.FC<MercureProps> = ({topic, Onchange, roomdata}) => {
@@ -28,8 +29,9 @@ const Mercure: React.FC<MercureProps> = ({topic, Onchange, roomdata}) => {
         if (event.type === "open") {
           console.log("Open SSE connection.");
         } else if (event.type === "message") {
-          console.log(event.data)
-            Onchange(event.data);
+          const parsedObject = event.data;
+            Onchange(parsedObject);
+           
         } else if (event.type === "error") {
           console.error("Connection error:", event.message);
         } else if (event.type === "exception") {
