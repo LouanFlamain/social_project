@@ -44,13 +44,12 @@ class MercureService{
             ];
         }
     }
-    public function mercureRoom($message, $topic){
-        $topic = 8;
+    public function mercureRoom($info, $topic){
         // Ici, vous ajoutez le topic à l'URL
         $topicUrl = 'select_room_' . $topic;
 
         // Créer un nouvel objet Update avec l'URL du topic
-        $update = new Update($topicUrl, json_encode(['message' => $message]), false);
+        $update = new Update($topicUrl, json_encode($info), false);
         
         // Publier l'update
         try {

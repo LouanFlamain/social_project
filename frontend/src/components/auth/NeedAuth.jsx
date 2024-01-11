@@ -64,7 +64,7 @@ const NeedAuth = ({ children }) => {
     return null;
   }
   return (
-    <div className="h-full bg-neutral_white rounded-xl">
+    <div className="h-full bg-neutral_white rounded-md">
       <div className="h-full">{children}</div>
     </div>
   );

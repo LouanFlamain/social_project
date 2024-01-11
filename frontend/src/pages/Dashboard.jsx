@@ -9,8 +9,7 @@ const Dashboard = () => {
   let userData = useSelector(selectUser);
 
   return (
-    <div className="flex h-full">
-      <p onClick={() => console.log(userData)}>test</p>
+    <div className="flex h-full p-5">
       <LeftPart userData={userData} />
       <RightPart />
     </div>

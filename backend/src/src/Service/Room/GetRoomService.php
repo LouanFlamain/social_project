@@ -160,6 +160,119 @@ class GetRoomService{
             ];
         }
     }
+    public function getUniqueRoomMercure($roomId, $userId){
+        /*if(empty($userId) || empty($roomId)){
+            return [
+                "code" => 400,
+                "message" => "Champs manquants"
+            ];
+        }
+    
+        $email_extract = $this->JwtExtractEmail->extractInformations($jwt);*/
+        $userRepository = $this->entityManager->getRepository(User::class);
+        /*$user = $userRepository->find($userId);
+        $userEmail = $user->getEmail();
+        if (!$userEmail) {
+            throw new ErrorException("Aucun email associé à l'id " . $userId);
+        }
+        
+        if($email_extract !== $userEmail){
+            return[
+                "code" => 404,
+                "message" => "Échec du chargement de la room"
+            ];
+        }*/
+    
+        try {
+            $room = $this->roomRepository->find($roomId);
+            if (!$room) {
+                return [
+                    "code" => 404,
+                    "message" => "Room non trouvée"
+                ];
+            }
+    
+            // Traitement pour obtenir les détails de la room
+            $date = $room->getLastMessageDate();
+            $timestamp = $date->getTimestamp();
+            $room_day_fr = $this->getDayInFrench($date->format("l"));
+    
+            $users = json_decode($room->getUsers());
+            $room_group = $room->getGroups();
+            $room_name = '';
+            $room_users = [];
+    
+            if(!$room_group){
+                foreach($users as $user){
+                    if($user !== $userId){
+                        $userQuery = $userRepository->find($user);
+                        $username = $userQuery->getUsername();
+                        $room_name = $username;
+                        array_push($room_users, $username);
+                    }
+                }
+            }
+    
+            if($room_group){
+                $group_name = $room->getName();
+                if($group_name !== null){
+                    $room_name = $group_name;
+                } else {
+                    foreach($users as $user){
+                        if($user !== $userId){
+                            $userQuery = $userRepository->find($user);
+                            $username = $userQuery->getUsername();
+                            array_push($room_users, $username);
+                        }
+                    }
+                    $room_name = implode(", ", $room_users);
+                }
+            }
+    
+            $crypted_message = $room->getLastMessageValue();
+            $decrypted_message = $this->cryptMessage->decryptMessage($crypted_message);
+    
+            $roomDetails = [
+                "id" => $room->getId(),
+                "room_name" => $room_name,
+                "users_id" => $users,
+                'usernames' => implode(", ", $room_users),
+                "multi_participant" => $room->getGroups(),
+                "last_message_value" => $decrypted_message,
+                "time" => [
+                    "last_message_date" => $room->getLastMessageDate()->format("Y-m-d"),
+                    "last_message_hour" => $room->getLastMessageDate()->format("H:i"),
+                    "last_message_day" => $room_day_fr,
+                    "timestamp" => $timestamp
+                ]
+            ];
+    
+            return [
+                "code" => 200,
+                "data" => $roomDetails
+            ];
+        } catch(\Exception $e) {
+            return [
+                "code" => 500,
+                "message" => "Erreur interne",
+                "error" => $e->getMessage()
+            ];
+        }
+    }
+    
+    private function getDayInFrench($day) {
+        $days = [
+            "Monday" => "Lundi",
+            "Tuesday" => "Mardi",
+            "Wednesday" => "Mercredi",
+            "Thursday" => "Jeudi",
+            "Friday" => "Vendredi",
+            "Saturday" => "Samedi",
+            "Sunday" => "Dimanche"
+        ];
+        return $days[$day] ?? $day;
+    }
+    
     public function getUniqueRoom($roomId, $userId, $jwt){
         if(empty($userId) || empty($roomId)){
             return [
