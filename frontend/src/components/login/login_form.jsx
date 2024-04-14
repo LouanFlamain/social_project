@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addUser } from "../../redux/userSlice";
+import { loginAsync } from "../../redux/userSlice";
 import { createLocalStorageToken } from "../../functions/createLocalStorageToken";
 
 const LoginForm = () => {
@@ -30,28 +30,16 @@ const LoginForm = () => {
       setCheckbox("password");
     }
   };
-  const fetchData = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.success) {
-          if (localStorage.getItem("token") !== null) {
-            localStorage.clear("token");
-          }
-          createLocalStorageToken(result.data.token, result.data.mercure_token);
-          dispatch(addUser(result.data));
-          navigate("/");
-        } else {
-          console.log(result.message);
-        }
-      });
+  const fetchData = async () => {
+    try {
+      // Pass credentials as an object
+      const credentials = { username : email, password };
+      // call API to login throught redux async
+      dispatch(loginAsync(credentials));
+      navigate('/')
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
   return (
     <>
