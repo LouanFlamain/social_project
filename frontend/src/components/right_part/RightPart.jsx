@@ -2,22 +2,24 @@ import React, { useState, useEffect, useRef } from "react";
 import ChatFooter from "./chat/ChatFooter";
 import ChatHeader from "./chat/ChatHeader";
 import ChatContent from "./chat/ChatContent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectRoom } from "../../redux/roomSlice";
-import { selectUser } from "../../redux/userSlice";
+import { selectUser, useMercureToken, useToken } from "../../redux/userSlice";
 import getInfoRoom from "../../api/room/getRoomInfo";
 import getMessage from "../../api/message/getMessage";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
-
+import { addMessage, selectMessages } from "../../redux/messagesSlice";
+import { getMessagesAsync } from "../../redux/messagesSlice";
 const RightPart = () => {
   let roomData = useSelector(selectRoom);
   let userData = useSelector(selectUser);
-  const mercure_token = localStorage.getItem("token_mercure");
+  const token = useSelector(useToken)
+  const messagesList = useSelector(selectMessages)
+  const mercure_token = useSelector(useMercureToken)
+  const dispatch = useDispatch()
 
   const [rightPopupState, setRightPopupState] = useState(false);
   const [usersData, setUsersData] = useState([]);
-  const [messages, setMessages] = useState([]);
-  const [isLoaded, SetIsLoaded] = useState(false);
   const [offset, setOffset] = useState(0);
 
   let ref = useRef(false);
@@ -38,7 +40,8 @@ const RightPart = () => {
       },
       onmessage(event) {
         if (!ref.current) {
-          setMessages((oldArray) => [...oldArray, JSON.parse(event.data)]);
+          const message = JSON.parse(event.data)
+          dispatch(addMessage(message))
         } else {
           ref.current = false;
         }
@@ -55,7 +58,7 @@ const RightPart = () => {
   useEffect(() => {
     if (roomData !== null) {
       //récupère les infos de la room
-      getInfoRoom(roomData?.id, userData?.id).then((response) => {
+      getInfoRoom(roomData?.id, userData?.id, token).then((response) => {
         setUsersData(response);
       });
       //recupère les messages
@@ -64,10 +67,8 @@ const RightPart = () => {
         room_id: roomData?.id,
         offset: offset,
       };
-      getMessage(request).then((response) => {
-        setMessages(response);
-        SetIsLoaded(true);
-      });
+      const payload = { request, token}
+      dispatch(getMessagesAsync(payload))
       subscribeToMercure(`chat_room_${roomData?.id}`);
     }
   }, [roomData]);
@@ -82,7 +83,7 @@ const RightPart = () => {
         />
         <ChatContent
           personnalId={userData?.id}
-          messages={messages}
+          messages={messagesList}
           users={usersData}
           rightPopupState={rightPopupState}
         />

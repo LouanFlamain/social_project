@@ -4,6 +4,7 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 // Importe les reducers pour chaque slice
 import userSlice from "./userSlice";
 import roomSlice from "./roomSlice";
+import messagesSlice from "./messagesSlice";
 
 // Importe les fonctions et constantes pour la persistance des données
 import {
@@ -26,7 +27,7 @@ const persistConfig = {
 };
 
 // Combine les reducers de chaque slice en un seul reducer global
-const rootReducer = combineReducers({ user: userSlice, room: roomSlice });
+const rootReducer = combineReducers({ user: userSlice, room: roomSlice, messages : messagesSlice });
 
 // Applique la configuration de persistance aux reducers combinés
 const persistedReducer = persistReducer(persistConfig, rootReducer);

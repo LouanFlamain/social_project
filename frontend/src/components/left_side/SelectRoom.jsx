@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import Rooms from "./Rooms";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { useSelector } from "react-redux";
+import { useMercureToken, useToken } from "../../redux/userSlice";
 
 const SelectRoom = ({ userData }) => {
   const [rooms, setRooms] = useState([]);
@@ -8,8 +10,8 @@ const SelectRoom = ({ userData }) => {
 
   const ref2 = useRef(false);
 
-  const token = localStorage.getItem("token_jwt");
-  const mercure_token = localStorage.getItem("token_mercure");
+  const token = useSelector(useToken)
+  const mercure_token = useSelector(useMercureToken)
 
   const fetchData = {
     user_id: userData?.id,
@@ -73,7 +75,7 @@ const SelectRoom = ({ userData }) => {
       subscribeToMercure();
     }
   }, []);
-  console.log(rooms);
+
 
   return (
     <>

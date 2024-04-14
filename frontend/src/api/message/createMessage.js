@@ -1,5 +1,4 @@
-const createMessage = (data) => {
-  const token = localStorage.getItem("token_jwt");
+const createMessage = (data, token) => {
   return fetch("http://127.0.0.1:9000/api/message/create", {
     method: "post",
     credentials: "include",

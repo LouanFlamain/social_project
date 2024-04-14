@@ -1,5 +1,4 @@
-const getInfoRoom = (roomId, userId) => {
-  const token = localStorage.getItem("token_jwt");
+const getInfoRoom = (roomId, userId, token) => {
   return fetch(`http://127.0.0.1:9000/api/room/${roomId}/id/${userId}`, {
     method: "get",
     headers: {
