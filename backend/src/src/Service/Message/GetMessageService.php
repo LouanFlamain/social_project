@@ -110,15 +110,18 @@ class GetMessageService
             }
 
         }
+        if(empty($message_response)){
+            return [
+                "code" => 400,
+                "message" => "error"
+            ];
+        }
 
-        $final_object = [
-            "room_data" => $room_object,
-            "message_response" => $message_response,
-        ];
+        $reverseArray = array_reverse($message_response);
 
         return [
             "code" => 200,
-            "data" => $final_object
+            "data" => $reverseArray
         ];
     }
 }

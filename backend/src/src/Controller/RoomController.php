@@ -26,13 +26,21 @@ class RoomController extends AbstractController
         }
         return new JsonResponse($result, $result['code']);
     }
-
-    #[Route('/api/get_rooms', name: "room.get", methods: "post")]
-    public function getRoom(GetRoomService $roomService, Request $request): JsonResponse
+    
+    #[Route('/api/get_rooms', name:"rooms.get", methods: "post")]
+    public function getRoom(GetRoomService $roomService, Request $request) : JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         $jwt = $request->headers->get('Authorization');
         $result = $roomService->getRooms($data, $jwt);
+        return new JsonResponse($result, $result['code']);
+    }
+
+    #[Route('/api/room/{room_id}/id/{user_id}', name: 'room.get', methods: "get")]
+    public function getRoomData(GetRoomService $roomService, Request $request, $room_id, $user_id) : JsonResponse
+    {
+        $jwt = $request->headers->get('Authorization');
+        $result = $roomService->getUniqueRoom($room_id,$user_id, $jwt); 
         return new JsonResponse($result, $result['code']);
     }
 
@@ -51,5 +59,9 @@ class RoomController extends AbstractController
         $jwt = $request->headers->get('Authorization');
         $result = $updateRoomNameService->updateRoomName($data, $jwt);
         return new JsonResponse($result, $result['code']);
+    }
+    #[Route('/api/test', name: "room.test", methods: "GET")]
+    public function test(){
+        dd('hello world');
     }
 }

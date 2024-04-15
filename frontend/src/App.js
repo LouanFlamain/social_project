@@ -5,7 +5,7 @@ import Register from "./pages/Register";
 import NeedAuth from "./components/auth/NeedAuth";
 function App() {
   return (
-    <div className="App bg-neutral_dark h-screen p-5">
+    <div className="App bg-neutral_dark h-screen">
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

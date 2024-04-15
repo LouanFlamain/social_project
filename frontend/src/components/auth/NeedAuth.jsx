@@ -1,14 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { KJUR } from "jsrsasign";
 import { useDispatch } from "react-redux";
-import { addUser } from "../../redux/userSlice";
+import { addUser, useIsLoggedIn } from "../../redux/userSlice";
 import { useSelector } from "react-redux";
-import { selectUser } from "../../redux/userSlice";
 import { useLocation, useNavigate } from "react-router";
 import { deleteLocalStorage } from "../../functions/deleteLocalStorage";
+import { useToken, selectUser } from "../../redux/userSlice";
+import { getInformations } from "../../redux/userSlice";
+import { logout } from "../../redux/userSlice";
 
 const NeedAuth = ({ children }) => {
-  const token = localStorage.getItem("token_jwt");
+  const test = useSelector(selectUser);
+  const token = useSelector(useToken);
+  const isLoggedIn = useSelector(useIsLoggedIn);
   const ref = useRef(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,9 +22,11 @@ const NeedAuth = ({ children }) => {
 
   const [userLoaded, setUserLoaded] = useState(false);
 
+  console.log(token, isLoggedIn, user)
+
   useEffect(() => {
     if (!ref.current) {
-      if (token !== null) {
+      if (token !== null && isLoggedIn) {
         /*const isValid = KJUR.jws.JWS.verifyJWT(
               process.env.REACT_APP_JWT_PUBLIC_KEY + "=",
               token,
@@ -33,25 +39,12 @@ const NeedAuth = ({ children }) => {
           if (user === null) {
             let [header, payload, signature] = token.split(".");
             const email = JSON.parse(atob(payload)).email;
-            fetch(`${process.env.REACT_APP_API_URL}/api/information/${email}`, {
-              method: "get",
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-              credentials: "include",
-            })
-              .then((response) => response.json())
-              .then((results) => {
-                if (results.code === 200) {
-                  dispatch(addUser(results.data));
-                  setUserLoaded(true);
-                }
-              });
+            dispatch(getInformations({email, token}))
           } else {
             setUserLoaded(true);
           }
         } else {
-          deleteLocalStorage();
+          logout()
           navigate("/login", { state: location });
         }
       } else {
@@ -64,7 +57,7 @@ const NeedAuth = ({ children }) => {
     return null;
   }
   return (
-    <div className="h-full bg-neutral_white rounded-xl">
+    <div className="h-full bg-neutral_white rounded-md">
       <div className="h-full">{children}</div>
     </div>
   );
