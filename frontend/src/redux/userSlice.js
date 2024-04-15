@@ -77,11 +77,11 @@ export const UserSlice = createSlice({
 
 
 
-export const selectUser = (state) => state.user;
-export const useMercureToken = (state) => state.user?.mercure
+export const selectUser = (state) => state.user.user;
+export const useMercureToken = (state) => state.user.user?.mercure_token
 export const useToken=(state) => state.user?.user?.token
 export const useIsLoggedIn=(state) => state.user?.isLoggedIn
-export const isLoading=(state) => state.isLoading
+export const selectIsLoading=(state) => state.user?.isLoading
 
 export const { logout } = UserSlice.actions;
 

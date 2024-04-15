@@ -43,7 +43,6 @@ export const MessagesSlice = createSlice({
       })
       .addCase(getMessagesAsync.fulfilled, (state, action) => {
         state.isLoading = false;
-        console.log("payload", action.payload)
         state.data = action.payload;
         state.error = false;
       })

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { loginAsync } from "../../redux/userSlice";
-import { createLocalStorageToken } from "../../functions/createLocalStorageToken";
+import { useDispatch, useSelector } from "react-redux";
+import { loginAsync, selectIsLoading, useToken } from "../../redux/userSlice";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -11,10 +10,13 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [checkbox, setCheckbox] = useState("password");
-  const data = {
-    username: email,
-    password: password,
-  };
+
+  const token = useSelector(useToken)
+  const isLoading= useSelector(selectIsLoading)
+
+  if(token){
+    navigate("/")
+  }
 
   const handleChange = (e, func) => {
     func(e.target.value);
@@ -36,7 +38,6 @@ const LoginForm = () => {
       const credentials = { username : email, password };
       // call API to login throught redux async
       dispatch(loginAsync(credentials));
-      navigate('/')
     } catch (error) {
       console.error('Login failed:', error);
     }

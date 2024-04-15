@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import Rooms from "./Rooms";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { useSelector } from "react-redux";
-import { useMercureToken, useToken } from "../../redux/userSlice";
+import { logout, useMercureToken, useToken } from "../../redux/userSlice";
+import getRooms from "../../api/room/getRooms";
+import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
 
 const SelectRoom = ({ userData }) => {
   const [rooms, setRooms] = useState([]);
@@ -12,6 +15,9 @@ const SelectRoom = ({ userData }) => {
 
   const token = useSelector(useToken)
   const mercure_token = useSelector(useMercureToken)
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const fetchData = {
     user_id: userData?.id,
@@ -54,22 +60,23 @@ const SelectRoom = ({ userData }) => {
       },
     });
   };
+  const retrieveData = async () =>{
+    try {  
+    const res = await getRooms(token, fetchData)
+      setRooms(res) 
+    } catch (error) {
+      if(error.code === 401){
+        dispatch(logout())
+        navigate("/")
+      }
+    }
+  }
+
+
   useEffect(() => {
     if (userData !== null) {
       if (!ref.current) {
-        fetch(`${process.env.REACT_APP_API_URL}/api/get_rooms`, {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(fetchData),
-        })
-          .then((response) => response.json())
-          .then((results) => {
-            setRooms(results.data);
-            console.log(results.data);
-          });
+        retrieveData()
         ref.current = true;
       }
       subscribeToMercure();
@@ -88,7 +95,7 @@ const SelectRoom = ({ userData }) => {
         <button className="btn">+</button>
       </div>
       <div className="rooms-custom-height overflow-auto">
-        {rooms != [] ? (
+        {rooms != undefined ? (
           <ul>
             {rooms.map((room, index) => {
               return <Rooms room={room} key={index} />;
