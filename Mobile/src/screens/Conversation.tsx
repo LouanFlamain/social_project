@@ -40,8 +40,9 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
   const navigation = useNavigation();
 
   useEffect(() => {
-    if (isMounted.current === false) {
+    if (!isMounted.current) {
         getConversation();
+
       isMounted.current = true;
     }
   }, [isMounted]);
@@ -49,7 +50,7 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
   const getConversation = async () => {
     try {
       const response = await getMessages(token, Myid, id);
-      console.log("hihi")
+      console.log(response.data)
       setConversations(response.data.message_response);
       setRoom(response.data.room_data);
     } catch (error: any) {
@@ -68,6 +69,7 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
        const res = await CreateMessage(token, Myid, id, message)
        console.log(res)
        const response = await getMessages(token, Myid, id);
+       console.log(response.data);
  
        // Update the state with the new conversation messages
        setConversations(response.data.message_response);
@@ -84,6 +86,7 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
   const Onchange = (parsedObject: string) => {
     const newObject = JSON.parse(parsedObject) as ConversationItem;
     setConversations((prevConversations :  ConversationItem[]) => [ newObject, ...prevConversations]);
+    console.log(conversations)
   };
   
 

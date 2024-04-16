@@ -7,8 +7,7 @@ import { loginAsync, selectIsLoading, selectIsLoggedIn } from '../utils/redux/Us
 import { useAppDispatch } from '../utils/redux/hook';
 import { useAppSelector } from '../utils/redux/hook';
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
-import BannerMessage from '../components/BannerMessage';
-
+import { BACKEND_URL } from '@env';
 
 function Login(): JSX.Element {
   const [username, setUsername] = useState('');
@@ -18,6 +17,7 @@ function Login(): JSX.Element {
   const dispatch = useAppDispatch()
   const isLoading = useAppSelector(selectIsLoading)
 
+  console.log(BACKEND_URL)
 
   const handleLogin = async () => {
     try {

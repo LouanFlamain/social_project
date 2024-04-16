@@ -5,7 +5,6 @@ import { selectMercureToken } from '../redux/UserSlice';
 import { useAppSelector } from '../redux/hook';
 import { MERCURE_URL } from '@env';
 
-import { ConversationItem } from '../../screens/Messages';
 interface MercureProps {
     topic: string,
     Onchange: () => void,

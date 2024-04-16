@@ -3,6 +3,7 @@ import { BACKEND_URL } from '@env';
 
 export const login = async (credentials: { username: string; password: string }) => {
     try {
+        console.log("yooo", BACKEND_URL)
         const response = await fetch(`${BACKEND_URL}/login`, {
             method: 'POST',
             headers: {
@@ -20,7 +21,7 @@ export const login = async (credentials: { username: string; password: string })
         const responseData = await response.json();
         return responseData.data;
     } catch (error) {
-        console.error('Login failed:', error);
+        console.log('Login failed:', error);
         throw error;
     }
 };
