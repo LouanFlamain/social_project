@@ -11,6 +11,7 @@ use App\Entity\ImageManager;
 use App\Entity\User;
 use App\Service\CryptMessageService;
 use App\Service\Mercure\MercureService;
+use App\Service\Room\GetRoomService;
 use DateTimeImmutable;
 
 class CreateMessageService{
@@ -20,13 +21,15 @@ class CreateMessageService{
     private $roomRepository;
     private $cryptMessage;
     private $mercureService;
+    private $roomService;
 
-    public function __construct(EntityManagerInterface $entityManager, VerifyUserService $verifyUserService, RoomRepository $roomRepository, CryptMessageService $cryptMessage, MercureService $mercureService){
+    public function __construct(EntityManagerInterface $entityManager, VerifyUserService $verifyUserService, RoomRepository $roomRepository, CryptMessageService $cryptMessage, MercureService $mercureService, GetRoomService $roomService){
         $this->entityManager = $entityManager;
         $this->verifyUserService = $verifyUserService;
         $this->roomRepository = $roomRepository;
         $this->cryptMessage = $cryptMessage;
         $this->mercureService = $mercureService;
+        $this->roomService = $roomService;
     }
 
     public function createMessage($data, $jwt, $isImage){
@@ -109,6 +112,12 @@ class CreateMessageService{
             try{
                 $this->entityManager->persist($room);
                 $this->entityManager->flush();
+
+                $users = json_decode($room->getUsers());
+                foreach($users as $user_id_mercure){
+                    $data_mercure_room = $this->roomService->getUniqueRoomMercure($roomId, $user_id_mercure);
+                    $this->mercureService->mercureRoom($data_mercure_room, $user_id_mercure);
+                }
 
                 if(!$isImage){
                     return[

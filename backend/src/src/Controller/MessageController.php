@@ -10,12 +10,9 @@ use App\Service\Message\CreateMessageService;
 use App\Service\Message\DeleteMessageService;
 use App\Service\Message\CreateImageService;
 use App\Service\Message\GetMessageService;
-use Symfony\Component\HttpFoundation\Response;
 use App\Service\Message\GetImageService;
-use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use App\Service\Mercure\MercureService;
 
 class MessageController extends AbstractController
 {

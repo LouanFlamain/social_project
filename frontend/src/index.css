@@ -180,3 +180,20 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+.chat-content-height {
+  height: calc(100% - 8rem);
+}
+
+.right-float-popup {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 95%;
+}
+.right-float-popup-close {
+  margin-right: -6rem;
+}
+.right-float-popup-open {
+  margin-right: 0.5rem;
+}
