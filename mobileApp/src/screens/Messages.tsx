@@ -7,7 +7,6 @@ import { useAppDispatch } from '../utils/redux/hook';
 import { useToken, useId, logout } from '../utils/redux/UserSlice';
 import { GetChats } from '../utils/services/ChatRoomService';
 import { useNavigation } from '@react-navigation/native';
-import Mercure from '../utils/Mercure/Mercure';
 
 
 
@@ -32,7 +31,7 @@ export interface Time{
 }
 
 function Messages(): JSX.Element {
-  const [conversations, setConversations] = useState([])
+  const [conversations, setConversations]= useState([])
   const [conversationSearch, setConversationSearch] = useState([])
   const isMounted =  useRef(false)
   const token = useAppSelector(useToken)
@@ -83,7 +82,7 @@ const handleSearch = (searchValue: string, filtre : string) => {
   // });
 
   // setConversations(updatedConversations);
-  getConversations()
+  // getConversations()
 
   }
 
@@ -94,7 +93,6 @@ const handleSearch = (searchValue: string, filtre : string) => {
         <Text>Messages</Text>
       </View>
       <View style={styles.messagesContainer}>
-      {/* <TabButtons buttons={tabsButtons} handleFiltres={handleFiltres}/> */}
       <SearchBar onSearch={handleSearch} variant="light" placeholder={"Cherchez une discussion"}/>
         {conversationSearch.length > 0 ? (
           conversationSearch.map((conversation: ConversationItem) => (
@@ -121,9 +119,6 @@ const handleSearch = (searchValue: string, filtre : string) => {
           />
         ))}
 
-        {conversations.map((conversation : ConversationItem)=>(
-            <Mercure topic={`chat_room_${conversation.id}`} Onchange={Onchange} roomdata={conversation.id}/>
-        ))}
         
        
       </View>

@@ -20,6 +20,7 @@ interface ListMessageProps {
 
 const ListMessage: React.FC<ListMessageProps> = ({id, pseudo, message, date, room_name}) => {
   const navigation = useNavigation();
+  console.log("list item", id)
 
 
   const truncate = (input:string) => input.length > 5 ? `${input.substring(0, 35)}...` : input;

@@ -59,7 +59,6 @@ const handleSearch = (searchValue: string, filtre : string) => {
     try {
       const response = await GetChats(id, token);
       setConversations(response);
-      console.log(response)
     } catch (error: any) {
       console.error('Error fetching conversations:', error);
       if(error.code === 401){
@@ -119,10 +118,6 @@ const handleSearch = (searchValue: string, filtre : string) => {
             multiparticipant = {conversation.multi_participant}
             room_name={conversation.room_name}
           />
-        ))}
-
-        {conversations.map((conversation : ConversationItem)=>(
-            <Mercure topic={`chat_room_${conversation.id}`} Onchange={Onchange} roomdata={conversation.id}/>
         ))}
         
        

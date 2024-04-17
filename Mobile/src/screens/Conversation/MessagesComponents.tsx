@@ -11,7 +11,6 @@ interface MessageComponentsProps{
 
 const MessagesComponents: React.FC<MessageComponentsProps> = ( {messages} ) => {
     const id = useAppSelector(useId);
-    console.log(messages)
   
     return (
       <ScrollView>

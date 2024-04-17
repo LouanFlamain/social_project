@@ -1,10 +1,17 @@
 import { useDispatch, useSelector } from 'react-redux'
 import type { TypedUseSelectorHook } from 'react-redux'
-import type { RootState, AppDispatch } from './store'
+import type { RootState, AppDispatch } from './Store'
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+
+
+export interface Creation_Date{
+    date: string,
+    timezone_type: number,
+    timezone: string
+}
 
 
 export interface UserSuccessfulResponse {
@@ -19,11 +26,26 @@ export interface UserSuccessfulResponse {
     id: number
 }
 
-export interface Creation_Date{
-    date: string,
-    timezone_type: number,
-    timezone: string
+export interface Message {
+    username: string,
+    user_id: number ,
+    value :string  | null,
+    createdAt : Creation_Date,
+    is_image : boolean
+  }
+
+
+export interface MessagesListSuccessfulResponse {
+   code : number,
+   data : Array<Message>
 }
+
+export interface MessagesListUnsuccessfulResponse {
+    code : number,
+    message : string
+ }
+
+
 
 export interface UserUnsuccessfullResponse {
     code: number, 

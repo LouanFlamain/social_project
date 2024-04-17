@@ -49,9 +49,8 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
 
   const getConversation = async () => {
     try {
-      const response = await getMessages(token, Myid, id);
-      console.log(response.data)
-      setConversations(response.data.message_response);
+      const response = await getMessages(token!, Myid!, id);
+      setConversations(response.data);
       setRoom(response.data.room_data);
     } catch (error: any) {
       console.error('Error fetching conversationsddddd:', error);
@@ -66,9 +65,9 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
     if (message.length > 0){
      try {
     
-       const res = await CreateMessage(token, Myid, id, message)
+       const res = await CreateMessage(token!, Myid!, id, message)
        console.log(res)
-       const response = await getMessages(token, Myid, id);
+       const response = await getMessages(token!, Myid!, id);
        console.log(response.data);
  
        // Update the state with the new conversation messages

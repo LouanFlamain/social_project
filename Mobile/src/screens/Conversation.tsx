@@ -1,24 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  Text,
   View,
-  FlatList,
-  KeyboardAvoidingView,
 } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../utils/redux/hook';
 import { useToken, useId, logout } from '../utils/redux/UserSlice';
 import { useNavigation } from '@react-navigation/native';
 import { CreateMessage, getMessages } from '../utils/services/MessageService';
-import { TextInput } from 'react-native-paper';
+import { ActivityIndicator, MD2Colors, TextInput } from 'react-native-paper';
 import Header from '../components/Header';
-import MessageComponent from '../components/Message';
-import { ScrollView } from 'react-native-gesture-handler';
 import * as SolidIcons from 'react-native-heroicons/solid';
 import Mercure from '../utils/Mercure/Mercure';
 import { ConversationItem } from './Messages';
 import MessagesComponents from './Conversation/MessagesComponents';
+import { GetMessages, SendMessages, selectIsLoading, selectMessages } from '../utils/redux/MessagesSlice';
 
 
 
@@ -26,9 +21,8 @@ interface ConversationProp {
   route: any
 }
 
-function Conversations<ConversationProp>({ route }): JSX.Element {
+function Conversations<ConversationProp>({ route  }): JSX.Element {
   const { id } = route.params;
-  const [conversations, setConversations] = useState([])
   const [room, setRoom] = useState();
   const [message, setMessage] = useState('');
 
@@ -36,8 +30,10 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
   const isMounted = useRef(false);
   const token = useAppSelector(useToken);
   const Myid = useAppSelector(useId);
+  const isLoading = useAppSelector(selectIsLoading)
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const conversations = useAppSelector(selectMessages)
 
   useEffect(() => {
     if (!isMounted.current) {
@@ -47,12 +43,15 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
     }
   }, [isMounted]);
 
+
   const getConversation = async () => {
     try {
-      const response = await getMessages(token, Myid, id);
-      console.log(response.data)
-      setConversations(response.data.message_response);
-      setRoom(response.data.room_data);
+      const data = {
+        token: token || '',
+        userId: Myid || 0, 
+        roomId: id,
+    };
+      await dispatch(GetMessages(data))
     } catch (error: any) {
       console.error('Error fetching conversationsddddd:', error);
       if (error.code === 401) {
@@ -62,42 +61,38 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
     }
   };
 
-  const SendMessage = async () =>{
+
+  const CreateMessage = async () =>{
+    console.log("icic")
     if (message.length > 0){
      try {
+      const data = {
+        token: token || '',
+        userId: Myid || 0, 
+        roomId: id,
+        value: message
+    };
     
-       const res = await CreateMessage(token, Myid, id, message)
-       console.log(res)
-       const response = await getMessages(token, Myid, id);
-       console.log(response.data);
- 
-       // Update the state with the new conversation messages
-       setConversations(response.data.message_response);
-       setMessage(''); // Clear the input field
+    dispatch(SendMessages(data))
+      setMessage(''); // Clear the input field
        
      } catch (error) {
        console.log(error)
        
      }
     }
-  
  }
-
-  const Onchange = (parsedObject: string) => {
-    const newObject = JSON.parse(parsedObject) as ConversationItem;
-    setConversations((prevConversations :  ConversationItem[]) => [ newObject, ...prevConversations]);
-    console.log(conversations)
-  };
-  
 
 
   return (
     <>
-    <Mercure topic={`chat_room_${id}`} Onchange={Onchange} roomdata={id}/>
+    <Mercure roomId={id}/>
     <View style={styles.container}>
       <Header title={room?.name ? room.name : "No title"} />
 
-      {conversations && conversations.length > 0 ?
+      {isLoading ? 
+      <ActivityIndicator animating={isLoading} color={MD2Colors.red800} />
+       : conversations && conversations.length > 0 ?
       <MessagesComponents messages={conversations} />
       : null}
 
@@ -106,7 +101,7 @@ function Conversations<ConversationProp>({ route }): JSX.Element {
           label="Ecrire un message"
           value={message}
           onChangeText={(text) => setMessage(text)}
-          right={<TextInput.Icon icon={SolidIcons.PaperAirplaneIcon} onPress={SendMessage}/>}
+          right={<TextInput.Icon icon={SolidIcons.PaperAirplaneIcon} onPress={CreateMessage}/>}
       
         />
         </View>

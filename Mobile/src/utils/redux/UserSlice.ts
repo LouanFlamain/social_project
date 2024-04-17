@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import type { RootState } from './store'
+import type { RootState } from './Store'
 import { UserSuccessfulResponse, UserUnsuccessfullResponse } from './hook'
 import { login } from '../services/UserService'
 import { Creation_Date } from './hook';

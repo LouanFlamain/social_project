@@ -94,7 +94,6 @@ function NewDiscussion(): JSX.Element {
         
       } catch (error : any) {
         setErrors(error)
-        console.log(error)  
       }
 
   }

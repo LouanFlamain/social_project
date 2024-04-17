@@ -20,6 +20,7 @@ export const GetChats = async (id : number, token : string) => {
         }
 
         const responseData = await response.json();
+        console.log(responseData)
         return responseData.data;
     } catch (error) {
         console.error('Get failed:', error);
@@ -52,6 +53,7 @@ export const newRoom = async (token : string|undefined, data : newRoomData) => {
         }
 
         const responseData = await response.json();
+        console.log(responseData)
         return responseData.data;
     } catch (error) {
         console.error('Get failed:', error);

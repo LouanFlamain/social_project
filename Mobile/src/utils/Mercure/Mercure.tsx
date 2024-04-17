@@ -1,54 +1,51 @@
 import React, { useEffect } from 'react'
-import EventSource, { EventSourceListener } from 'react-native-sse';
-import 'react-native-url-polyfill/auto';
+import EventSource, { EventSourceListener } from "react-native-sse";
 import { selectMercureToken } from '../redux/UserSlice';
 import { useAppSelector } from '../redux/hook';
-import { MERCURE_URL } from '@env';
+import { useAppDispatch } from '../redux/hook';
+import { addMessages } from '../redux/MessagesSlice';
 
 interface MercureProps {
-    topic: string,
-    Onchange: () => void,
-    roomdata?: number,
+  roomId: number,
 }
 
-const Mercure: React.FC<MercureProps> = ({topic, Onchange, roomdata}) => {
+type CustomEvents = "open" | "message" | "error";
 
+
+const Mercure: React.FC<MercureProps> = ({roomId}) => {
+
+    const dispatch = useAppDispatch()
     const mercureToken = useAppSelector(selectMercureToken)
 
-    const options = { headers: { Authorization: `Bearer ${mercureToken}` } };
-
-    const topicUrl = `${MERCURE_URL}/.well-known/mercure?topic=${topic}`;    
-
-    console.log(topicUrl)
-    
     useEffect(() => {
-      const es  = new EventSource(topicUrl, options);
+      const options = { headers: { Authorization: `Bearer ${mercureToken}` } };
+
+      const topicUrl = `http://10.0.2.2:9090/.well-known/mercure?topic=chat_room_`+roomId;  
+      console.log(topicUrl)
     
-      const listener: EventSourceListener = (event) => {
+      const es = new EventSource<CustomEvents>(topicUrl, options);
+
+      const listener: EventSourceListener<CustomEvents> = (event) => {
         if (event.type === "open") {
-          console.log("Open SSE connection.");
-        } else if (event.type === "message") {
-          const parsedObject = event.data;
-            Onchange(parsedObject);
-           
-        } else if (event.type === "error") {
-          console.error("Connection error:", event.message);
-        } else if (event.type === "exception") {
-          console.error("Error:", event.message, event.error);
+          console.log("SSE opened")
+        } else if (event.type === 'message') {
+          dispatch(addMessages(event.data))
+        } else if (event.type === 'error') {
+          console.log("SSE error", event.message)
+
         }
-      };
-    
+      }
+
       es.addEventListener("open", listener);
       es.addEventListener("message", listener);
       es.addEventListener("error", listener);
-    
-      return () => {
-        es.removeAllEventListeners();
-        es.close();
-      };
-    }, []);
 
-    return null;
+      return () => {
+      es.close();
+    };
+  }, []);
+
+  return null
     
 
 }

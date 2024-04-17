@@ -11,6 +11,7 @@ import {
     PURGE,
     REGISTER,
   } from 'redux-persist'
+import MessagesSlice from './MessagesSlice';
 
 const persistConfig = {
   storage: AsyncStorage,
@@ -18,6 +19,7 @@ const persistConfig = {
 };
 const rootReducer = combineReducers({
      user:UserSlice, 
+     messages : MessagesSlice
   });
 
 export const persistedReducer = persistReducer(persistConfig, rootReducer);

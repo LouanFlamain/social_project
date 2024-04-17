@@ -3,13 +3,12 @@ import { BACKEND_URL } from '@env';
 
 export const getMessages = async (token: string, userId: number, room_id: number) => {
     try {
-        console.log("la")
         const data = {
             user_id: userId,
             room_id,
             offset: 0
         }
-        const response = await fetch(`${BACKEND_URL}/message/get`, {
+        const response = await fetch(`http://10.0.2.2:9000/api/message/get`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -18,26 +17,19 @@ export const getMessages = async (token: string, userId: number, room_id: number
             body: JSON.stringify(data),
         });
 
-        console.log(response);
-
-        console.log("et ici")
-
         if (!response.ok) {
-            console.log("jureeee")
             const errorData = await response.json();
             console.error('Server error:', errorData);
             throw errorData;
         }
 
             const responseData = await response.json();
-            console.log(responseData)
-            console.log(response)
-            console.log('Messages fetched successfully:', responseData);
-            return responseData;
+    console.log(responseData)
+
+            
+    return responseData;
         
     } catch (error) {
-        console.log("nonnnn")
-        console.error('Error fetching messages:', error);
         throw error;
     }
 };
