@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addUser } from "../../redux/userSlice";
-import { createLocalStorageToken } from "../../functions/createLocalStorageToken";
+import { useDispatch, useSelector } from "react-redux";
+import { loginAsync, selectIsLoading, useToken } from "../../redux/userSlice";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -11,10 +10,13 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [checkbox, setCheckbox] = useState("password");
-  const data = {
-    username: email,
-    password: password,
-  };
+
+  const token = useSelector(useToken)
+  const isLoading= useSelector(selectIsLoading)
+
+  if(token){
+    navigate("/")
+  }
 
   const handleChange = (e, func) => {
     func(e.target.value);
@@ -30,28 +32,15 @@ const LoginForm = () => {
       setCheckbox("password");
     }
   };
-  const fetchData = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.success) {
-          if (localStorage.getItem("token") !== null) {
-            localStorage.clear("token");
-          }
-          createLocalStorageToken(result.data.token, result.data.mercure_token);
-          dispatch(addUser(result.data));
-          navigate("/");
-        } else {
-          console.log(result.message);
-        }
-      });
+  const fetchData = async () => {
+    try {
+      // Pass credentials as an object
+      const credentials = { username : email, password };
+      // call API to login throught redux async
+      dispatch(loginAsync(credentials));
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
   return (
     <>
@@ -110,7 +99,7 @@ const LoginForm = () => {
             className="underline underline-offset-2 text-neutral_dark md:hover:scale-105"
             to="/register"
           >
-            Enregistrez vous ici !
+            Inscrivez-vous ici !
           </Link>
         </div>
       </div>

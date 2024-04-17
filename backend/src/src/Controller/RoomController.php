@@ -14,20 +14,20 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RoomController extends AbstractController
 {
-    #[Route('/api/create_room',name: "room.create", methods: "post" )]
-    public function createRoom(CreateRoomSingleService $roomServiceSingle,CreateRoomMultiService $roomServiceMulti,Request $request) : JsonResponse
+    #[Route('/api/create_room', name: "room.create", methods: "post")]
+    public function createRoom(CreateRoomSingleService $roomServiceSingle, CreateRoomMultiService $roomServiceMulti, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         $jwt = $request->headers->get('Authorization');
-        if(count($data['users']) > 2){
+        if (count($data['users']) > 2) {
             $result = $roomServiceMulti->createRoom($data, $jwt);
-        }else{ 
+        } else {
             $result = $roomServiceSingle->createRoom($data, $jwt);
         }
         return new JsonResponse($result, $result['code']);
     }
     
-    #[Route('/api/get_rooms', name:"room.get", methods: "post")]
+    #[Route('/api/get_rooms', name:"rooms.get", methods: "post")]
     public function getRoom(GetRoomService $roomService, Request $request) : JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -36,8 +36,16 @@ class RoomController extends AbstractController
         return new JsonResponse($result, $result['code']);
     }
 
+    #[Route('/api/room/{room_id}/id/{user_id}', name: 'room.get', methods: "get")]
+    public function getRoomData(GetRoomService $roomService, Request $request, $room_id, $user_id) : JsonResponse
+    {
+        $jwt = $request->headers->get('Authorization');
+        $result = $roomService->getUniqueRoom($room_id,$user_id, $jwt); 
+        return new JsonResponse($result, $result['code']);
+    }
+
     #[Route('/api/room/add_user', name: "room.add", methods: "post")]
-    public function addToRoom(AddUserToRoom $addService,Request $request) : JsonResponse
+    public function addToRoom(AddUserToRoom $addService, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         $jwt = $request->headers->get('Authorization');
@@ -45,10 +53,15 @@ class RoomController extends AbstractController
         return new JsonResponse($result, $result['code']);
     }
     #[Route('/api/room/name_update', name: "room.name.update", methods: "patch")]
-    public function updateRoomName(Request $request, UpdateRoomNameService $updateRoomNameService){
+    public function updateRoomName(Request $request, UpdateRoomNameService $updateRoomNameService)
+    {
         $data = json_decode($request->getContent(), true);
         $jwt = $request->headers->get('Authorization');
         $result = $updateRoomNameService->updateRoomName($data, $jwt);
         return new JsonResponse($result, $result['code']);
+    }
+    #[Route('/api/test', name: "room.test", methods: "GET")]
+    public function test(){
+        dd('hello world');
     }
 }

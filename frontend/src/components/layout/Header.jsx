@@ -8,7 +8,7 @@ const Header = ({ userData }) => {
           id="image"
           className="w-[3rem] h-[3rem] bg-primary rounded-full mr-2"
         ></div>
-        <p>{userData?.username}</p>
+        <p className="text-neutral_dark font-semibold">{userData?.username}</p>
       </div>
     </div>
   );
