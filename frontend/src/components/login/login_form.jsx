@@ -99,7 +99,7 @@ const LoginForm = () => {
             className="underline underline-offset-2 text-neutral_dark md:hover:scale-105"
             to="/register"
           >
-            Enregistrez vous ici !
+            Inscrivez-vous ici !
           </Link>
         </div>
       </div>

@@ -132,7 +132,7 @@ const RegisterForm = () => {
             className="underline underline-offset-2 text-neutral_dark md:hover:scale-105"
             to="/login"
           >
-            ici
+            ici !
           </Link>
         </div>
       </div>
